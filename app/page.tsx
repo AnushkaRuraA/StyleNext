@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -33,9 +34,9 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <button className="px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-slate-200 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-white/10">
+            <Link href="/get-started" className="px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-slate-200 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-white/10">
               Get Started
-            </button>
+            </Link>
             <button className="px-8 py-4 rounded-full bg-slate-900/50 backdrop-blur-sm border border-slate-800 text-slate-300 font-semibold hover:bg-slate-800 transition-all transform hover:scale-105 active:scale-95">
               Learn More
             </button>
