@@ -1,57 +1,147 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-export default function Home() {
+import { 
+  Users, 
+  Store, 
+  ClipboardCheck, 
+  CalendarDays, 
+  IndianRupee 
+} from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+const stats = [
+  {
+    title: "Total Customers",
+    value: "120",
+    icon: Users,
+    color: "text-blue-500",
+    bgColor: "bg-blue-50",
+  },
+  {
+    title: "Salon Owners",
+    value: "25",
+    icon: Store,
+    color: "text-purple-500",
+    bgColor: "bg-purple-50",
+  },
+  {
+    title: "Pending Approvals",
+    value: "5",
+    icon: ClipboardCheck,
+    color: "text-orange-500",
+    bgColor: "bg-orange-50",
+  },
+  {
+    title: "Total Bookings",
+    value: "45",
+    icon: CalendarDays,
+    color: "text-green-500",
+    bgColor: "bg-green-50",
+  },
+  {
+    title: "Revenue Today",
+    value: "₹12,500",
+    icon: IndianRupee,
+    color: "text-gold",
+    bgColor: "bg-gold/10",
+  },
+];
+
+const revenueData = [
+  { name: "Mon", revenue: 8400, bookings: 24 },
+  { name: "Tue", revenue: 9200, bookings: 30 },
+  { name: "Wed", revenue: 10500, bookings: 35 },
+  { name: "Thu", revenue: 11000, bookings: 38 },
+  { name: "Fri", revenue: 14000, bookings: 45 },
+  { name: "Sat", revenue: 18500, bookings: 60 },
+  { name: "Sun", revenue: 16200, bookings: 52 },
+];
+
+export default function Dashboard() {
   return (
-    <div className="relative min-h-screen font-sans bg-slate-950 text-slate-50 overflow-hidden">
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500/20 blur-[120px] pointer-events-none" />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
+        <p className="text-gray-500 mt-1">Welcome back, here's what's happening today.</p>
+      </div>
 
-      {/* Main Content */}
-      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        {/* Logo/Icon Container */}
-        <div className="mb-10 animate-fade-in">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center p-3 shadow-2xl shadow-blue-500/20">
-            <Image
-              className="invert"
-              src="/next.svg"
-              alt="StyleNext logo"
-              width={40}
-              height={40}
-            />
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        {stats.map((stat, idx) => {
+          const Icon = stat.icon;
+          return (
+            <div key={idx} className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+              <div className={`p-4 rounded-xl ${stat.bgColor}`}>
+                <Icon className={`w-6 h-6 ${stat.color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">{stat.title}</p>
+                <h3 className="text-2xl font-bold text-gray-800 mt-1">{stat.value}</h3>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+        <div className="lg:col-span-2 bg-card p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-gray-800">Revenue & Bookings (This Week)</h3>
+            <select className="bg-background-main border-none rounded-lg text-sm px-3 py-1.5 focus:ring-2 focus:ring-gold/50 outline-none">
+              <option>This Week</option>
+              <option>Last Week</option>
+              <option>This Month</option>
+            </select>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dy={10} />
+                <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
+                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
+                <Tooltip 
+                  cursor={{fill: '#f9f9f9'}}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                />
+                <Bar yAxisId="left" dataKey="revenue" name="Revenue (₹)" fill="#0F2E4A" radius={[4, 4, 0, 0]} barSize={24} />
+                <Bar yAxisId="right" dataKey="bookings" name="Bookings" fill="#B28D5A" radius={[4, 4, 0, 0]} barSize={24} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Hero Section */}
-        <div className="max-w-3xl space-y-6">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
-            Hello, Users
-          </h1>
-
-          <p className="text-lg md:text-xl text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
-            Welcome to the future of design. Our cutting-edge interface brings you a premium experience like never before.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link href="/get-started" className="px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-slate-200 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-white/10">
-              Get Started
-            </Link>
-            <button className="px-8 py-4 rounded-full bg-slate-900/50 backdrop-blur-sm border border-slate-800 text-slate-300 font-semibold hover:bg-slate-800 transition-all transform hover:scale-105 active:scale-95">
-              Learn More
-            </button>
+        {/* Quick Actions / Recent Activity Placeholder */}
+        <div className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h3 className="text-lg font-bold text-gray-800 mb-6">Recent Activity</h3>
+          <div className="space-y-6">
+            {[
+              { title: "New Salon Request", desc: "Urban Cut has submitted a registration request.", time: "10 mins ago", color: "bg-orange-100 text-orange-600" },
+              { title: "Booking Completed", desc: "John Doe at GK Styles.", time: "1 hour ago", color: "bg-green-100 text-green-600" },
+              { title: "Payment Received", desc: "Advance payment of ₹500 received.", time: "2 hours ago", color: "bg-blue-100 text-blue-600" },
+              { title: "New Review", desc: "5 stars rating given to Glow Salon.", time: "3 hours ago", color: "bg-gold/20 text-gold" },
+            ].map((activity, i) => (
+              <div key={i} className="flex gap-4">
+                <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${activity.color.split(' ')[0]}`} />
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-800">{activity.title}</h4>
+                  <p className="text-xs text-gray-500 mt-1">{activity.desc}</p>
+                  <span className="text-xs text-gray-400 mt-1 block">{activity.time}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-
-        {/* Decorative Badge */}
-        <div className="mt-20 px-4 py-2 rounded-full border border-slate-800 bg-slate-900/40 backdrop-blur-sm text-sm text-slate-500 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-          Designing the next generation of web applications.
-        </div>
-      </main>
-
-      {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 z-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
+      </div>
     </div>
   );
 }
