@@ -52,11 +52,11 @@ export default function ReviewsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Ratings & Reviews</h1>
-          <p className="text-gray-500 mt-1">Monitor feedback and ratings given by customers to salons.</p>
+          <h1 className="text-2xl font-bold text-gold">Ratings & Reviews</h1>
+          <p className="text-gold mt-1">Monitor feedback and ratings given by customers to salons.</p>
         </div>
         
-        <div className="flex items-center gap-4 bg-card px-4 py-2 rounded-xl shadow-sm border border-gray-100">
+        <div className="flex items-center gap-4 bg-[#EBE2D3] px-4 py-2 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 border-r border-gray-100 pr-4">
             <span className="text-2xl font-bold text-gray-900">4.6</span>
             <div className="flex text-gold">
@@ -71,7 +71,7 @@ export default function ReviewsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {reviews.map((review) => (
-          <div key={review.id} className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div key={review.id} className="bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm shadow-sm border border-blue-100">
