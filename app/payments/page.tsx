@@ -13,11 +13,11 @@ export default function PaymentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">Payments</h1>
-        <p className="text-gray-500 mt-1">Track 10% online advance and 90% in-salon remaining payments.</p>
+        <h1 className="text-2xl font-bold text-gold">Payments</h1>
+        <p className="text-gold mt-1">Track 10% online advance and 90% in-salon remaining payments.</p>
       </div>
 
-      <div className="bg-card rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-[#EBE2D3] rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

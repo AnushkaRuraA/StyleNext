@@ -5,10 +5,311 @@
   --color-primary-dark: #0A1F32;
   --color-gold: #B28D5A;
   --color-gold-hover: #9E7D50;
+  --color-gold-dark: #5C4011;
   --color-coral: #BA6A58;
   --color-coral-hover: #A0594A;
   --color-background-main: #F4F7F6;
   --color-card: #FFFFFF;
+}
+
+@layer utilities {
+  .animate-scissor-left {
+    animation: scissor-left 4s ease-in-out infinite;
+  }
+
+  .animate-scissor-right {
+    animation: scissor-right 4s ease-in-out infinite;
+  }
+
+  .animate-scissor-move {
+    animation: scissor-move 4s ease-in-out infinite;
+  }
+
+  .animate-line-cut {
+    animation: line-cut 4s ease-in-out infinite;
+  }
+}
+
+/* New Icon Animations explicitly mapped to group:hover */
+.group:hover .hover-animate-dashboard {
+  animation: icon-pulse 1.5s ease-in-out infinite;
+}
+
+.group:hover .hover-animate-clipboard {
+  animation: icon-bounce 1s ease-in-out infinite;
+}
+
+.group:hover .hover-animate-users {
+  animation: icon-wiggle 1.5s ease-in-out infinite;
+}
+
+.group:hover .hover-animate-store {
+  animation: icon-swing 2s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.group:hover .hover-animate-calendar {
+  animation: icon-flip 2s ease-in-out infinite;
+}
+
+.group:hover .hover-animate-card {
+  animation: icon-tilt 1.5s ease-in-out infinite;
+}
+
+.group:hover .hover-animate-chart {
+  animation: icon-chart 1.5s ease-in-out infinite;
+}
+
+.group:hover .hover-animate-star {
+  animation: icon-spin-star 2s linear infinite;
+}
+
+/* Custom snip classes for the Services SVG */
+.group:hover .hover-animate-snip-left {
+  animation: icon-snip-left 0.5s ease-in-out infinite;
+}
+
+.group:hover .hover-animate-snip-right {
+  animation: icon-snip-right 0.5s ease-in-out infinite;
+}
+
+@keyframes scissor-left {
+
+  0%,
+  10%,
+  26%,
+  42%,
+  58%,
+  74%,
+  90%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  18%,
+  34%,
+  50%,
+  66%,
+  82% {
+    transform: rotate(-35deg);
+  }
+}
+
+@keyframes scissor-right {
+
+  0%,
+  10%,
+  26%,
+  42%,
+  58%,
+  74%,
+  90%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  18%,
+  34%,
+  50%,
+  66%,
+  82% {
+    transform: rotate(35deg);
+  }
+}
+
+@keyframes scissor-move {
+
+  0%,
+  10% {
+    left: 0%;
+  }
+
+  90%,
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes line-cut {
+
+  0%,
+  10% {
+    clip-path: inset(0 0 0 0%);
+  }
+
+  90%,
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+/* Icon Animation Keyframes */
+@keyframes icon-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes icon-bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes icon-wiggle {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-10deg);
+  }
+
+  75% {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes icon-swing {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(6deg);
+  }
+
+  75% {
+    transform: rotate(-6deg);
+  }
+}
+
+@keyframes icon-flip {
+
+  0%,
+  100% {
+    transform: perspective(400px) rotateY(0);
+  }
+
+  50% {
+    transform: perspective(400px) rotateY(180deg);
+  }
+}
+
+@keyframes icon-tilt {
+
+  0%,
+  100% {
+    transform: perspective(400px) rotateX(0deg) rotateY(0deg);
+  }
+
+  25% {
+    transform: perspective(400px) rotateX(15deg) rotateY(-10deg);
+  }
+
+  75% {
+    transform: perspective(400px) rotateX(-15deg) rotateY(10deg);
+  }
+}
+
+@keyframes icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes icon-chart {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(1.2) translateY(-2px);
+  }
+}
+
+@keyframes icon-spin-star {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+
+  50% {
+    transform: scale(1.2) rotate(180deg);
+  }
+
+  to {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+@keyframes icon-snip-left {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(-25deg);
+  }
+}
+
+@keyframes icon-snip-right {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(25deg);
+  }
+}
+
+/* Elegant Search Icon Animation */
+.group:focus-within .search-icon-anim {
+  animation: search-look 0.8s ease-in-out infinite;
+  color: var(--color-gold-dark) !important;
+}
+
+@keyframes search-look {
+  0%, 100% {
+    margin-left: 0px;
+    rotate: 0deg;
+  }
+  25% {
+    margin-left: -2px;
+    rotate: -10deg;
+  }
+  50% {
+    margin-left: 0px;
+    rotate: 0deg;
+  }
+  75% {
+    margin-left: 2px;
+    rotate: 10deg;
+  }
 }
 
 @layer base {

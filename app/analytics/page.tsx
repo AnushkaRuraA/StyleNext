@@ -58,8 +58,8 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">Analytics & Reports</h1>
-        <p className="text-gray-500 mt-1">Dive deep into platform performance, earnings, and customer growth.</p>
+        <h1 className="text-2xl font-bold text-gold">Analytics & Reports</h1>
+        <p className="text-gold mt-1">Dive deep into platform performance, earnings, and customer growth.</p>
       </div>
 
       {/* Top Value Cards */}
@@ -93,13 +93,13 @@ export default function AnalyticsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Area Chart */}
-        <div className="lg:col-span-2 bg-card p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="lg:col-span-2 bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold text-gray-800">Growth Overview</h3>
-            <select className="bg-background-main border-none rounded-lg text-sm px-3 py-1.5 focus:ring-2 focus:ring-primary/50 outline-none">
-              <option>Last 6 Months</option>
-              <option>This Year</option>
-              <option>All Time</option>
+            <select className="bg-background-main border-none rounded-lg text-sm px-3 py-1.5 focus:ring-2 focus:ring-primary/50 outline-none text-gold-dark font-medium cursor-pointer">
+              <option className="text-gold-dark">Last 6 Months</option>
+              <option className="text-gold-dark">This Year</option>
+              <option className="text-gold-dark">All Time</option>
             </select>
           </div>
           <div className="h-[350px] w-full mt-4">
@@ -128,7 +128,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Pie Chart */}
-        <div className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+        <div className="bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
           <h3 className="text-lg font-bold text-gray-800 mb-2">Service Distribution</h3>
           <p className="text-sm text-gray-500 mb-6">Breakdown of bookings by category.</p>
           
