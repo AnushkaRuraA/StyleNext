@@ -1,11 +1,11 @@
 "use client";
 
-import { 
-  Users, 
-  Store, 
-  ClipboardCheck, 
-  CalendarDays, 
-  IndianRupee 
+import {
+  Users,
+  Store,
+  ClipboardCheck,
+  CalendarDays,
+  IndianRupee
 } from "lucide-react";
 import {
   BarChart,
@@ -69,8 +69,8 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
-        <p className="text-gray-500 mt-1">Welcome back, here's what's happening today.</p>
+        <h1 className="text-2xl font-bold text-gold">Dashboard Overview</h1>
+        <p className="text-gold mt-1">Welcome back, here's what's happening today.</p>
       </div>
 
       {/* Stats Grid */}
@@ -78,7 +78,7 @@ export default function Dashboard() {
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <div key={idx} className="bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
               <div className={`p-4 rounded-xl ${stat.bgColor}`}>
                 <Icon className={`w-6 h-6 ${stat.color}`} />
               </div>
@@ -93,25 +93,26 @@ export default function Dashboard() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-        <div className="lg:col-span-2 bg-card p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="lg:col-span-2 bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold text-gray-800">Revenue & Bookings (This Week)</h3>
-            <select className="bg-background-main border-none rounded-lg text-sm px-3 py-1.5 focus:ring-2 focus:ring-gold/50 outline-none">
-              <option>This Week</option>
-              <option>Last Week</option>
-              <option>This Month</option>
+            <select className="bg-background-main border-none rounded-lg text-sm px-3 py-1.5 focus:ring-2 focus:ring-gold/50 outline-none text-gold-dark font-medium cursor-pointer">
+              <option className="text-gold-dark">This Week</option>
+              <option className="text-gold-dark">Last Week</option>
+              <option className="text-gold-dark">This Month</option>
             </select>
           </div>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dy={10} />
-                <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
-                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
-                <Tooltip 
-                  cursor={{fill: '#f9f9f9'}}
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} dy={10} />
+                <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} />
+                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} />
+                <Tooltip
+                  cursor={{ fill: 'rgba(92, 64, 17, 0.05)' }}
+                  contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  labelStyle={{ color: '#5C4011', fontWeight: 'bold' }}
                 />
                 <Bar yAxisId="left" dataKey="revenue" name="Revenue (₹)" fill="#0F2E4A" radius={[4, 4, 0, 0]} barSize={24} />
                 <Bar yAxisId="right" dataKey="bookings" name="Bookings" fill="#B28D5A" radius={[4, 4, 0, 0]} barSize={24} />
@@ -121,7 +122,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions / Recent Activity Placeholder */}
-        <div className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100">
           <h3 className="text-lg font-bold text-gray-800 mb-6">Recent Activity</h3>
           <div className="space-y-6">
             {[

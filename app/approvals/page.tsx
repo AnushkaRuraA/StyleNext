@@ -15,20 +15,20 @@ export default function ApprovalsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Pending Approvals</h1>
-          <p className="text-gray-500 mt-1">Review and manage salon owner registration requests.</p>
+          <h1 className="text-2xl font-bold text-gold">Pending Approvals</h1>
+          <p className="text-gold mt-1">Review and manage salon owner registration requests.</p>
         </div>
-        <div className="relative w-full sm:w-64">
-           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="relative w-full sm:w-64 group">
+           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-all duration-300 search-icon-anim" />
            <input
              type="text"
              placeholder="Search requests..."
-             className="w-full pl-10 pr-4 py-2 bg-card border border-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+             className="w-full pl-10 pr-4 py-2 bg-[#EBE2D3] border border-gray-100 rounded-lg text-sm text-gold-dark placeholder:text-gold-dark/60 font-medium focus:outline-none focus:ring-2 focus:ring-gold-dark/50"
            />
         </div>
       </div>
 
-      <div className="bg-card rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-[#EBE2D3] rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
