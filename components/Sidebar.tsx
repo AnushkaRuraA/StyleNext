@@ -34,7 +34,7 @@ const CustomScissorsIcon = ({ className }: { className?: string }) => (
 );
 
 const navItems = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard, animationClass: "hover-animate-dashboard" },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, animationClass: "hover-animate-dashboard" },
   { name: "Approvals", href: "/approvals", icon: ClipboardCheck, animationClass: "hover-animate-clipboard" },
   { name: "Customers", href: "/customers", icon: Users, animationClass: "hover-animate-users" },
   { name: "Salons", href: "/salons", icon: Store, animationClass: "hover-animate-store" },

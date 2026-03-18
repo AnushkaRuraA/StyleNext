@@ -1,147 +1,179 @@
 "use client";
 
-import {
-  Users,
-  Store,
-  ClipboardCheck,
-  CalendarDays,
-  IndianRupee
-} from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Lock, User, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import logger from "@/utils/logger";
 
-const stats = [
-  {
-    title: "Total Customers",
-    value: "120",
-    icon: Users,
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    title: "Salon Owners",
-    value: "25",
-    icon: Store,
-    color: "text-purple-500",
-    bgColor: "bg-purple-50",
-  },
-  {
-    title: "Pending Approvals",
-    value: "5",
-    icon: ClipboardCheck,
-    color: "text-orange-500",
-    bgColor: "bg-orange-50",
-  },
-  {
-    title: "Total Bookings",
-    value: "45",
-    icon: CalendarDays,
-    color: "text-green-500",
-    bgColor: "bg-green-50",
-  },
-  {
-    title: "Revenue Today",
-    value: "₹12,500",
-    icon: IndianRupee,
-    color: "text-gold",
-    bgColor: "bg-gold/10",
-  },
-];
+export default function LoginPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
 
-const revenueData = [
-  { name: "Mon", revenue: 8400, bookings: 24 },
-  { name: "Tue", revenue: 9200, bookings: 30 },
-  { name: "Wed", revenue: 10500, bookings: 35 },
-  { name: "Thu", revenue: 11000, bookings: 38 },
-  { name: "Fri", revenue: 14000, bookings: 45 },
-  { name: "Sat", revenue: 18500, bookings: 60 },
-  { name: "Sun", revenue: 16200, bookings: 52 },
-];
+  useEffect(() => {
+    setIsMounted(true);
+    logger.info("Admin login page mounted");
+  }, []);
 
-export default function Dashboard() {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    const startTime = Date.now();
+
+    try {
+      logger.info(`Attempting login for user: ${username}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+      const endTime = Date.now();
+      
+      logger.api("POST", "/api/admin/login", response.status, endTime - startTime);
+
+      if (data.success) {
+        logger.success("Login successful, redirecting...");
+        // Set cookie manually
+        document.cookie = `admin_token=${data.token}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+        
+        // Redirect to dashboard
+        router.push("/dashboard");
+      } else {
+        logger.warn(`Login failed: ${data.message}`);
+        setError(data.message || "Invalid credentials");
+      }
+    } catch (err: any) {
+      logger.error("Login attempt error:", err);
+      setError("Failed to connect to the server. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!isMounted) return null;
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Dashboard Overview</h1>
-        <p className="text-gold mt-1">Welcome back, here's what's happening today.</p>
-      </div>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#040D15]">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#B28D5A]/10 blur-[120px] animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#BA6A58]/10 blur-[120px] animate-pulse" />
+      
+      {/* Decorative Grid */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+        style={{ 
+            backgroundImage: 'radial-gradient(#B28D5A 1px, transparent 1px)', 
+            backgroundSize: '40px 40px' 
+        }} 
+      />
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-        {stats.map((stat, idx) => {
-          const Icon = stat.icon;
-          return (
-            <div key={idx} className="bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <div className={`p-4 rounded-xl ${stat.bgColor}`}>
-                <Icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">{stat.title}</p>
-                <h3 className="text-2xl font-bold text-gray-800 mt-1">{stat.value}</h3>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-        <div className="lg:col-span-2 bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-gray-800">Revenue & Bookings (This Week)</h3>
-            <select className="bg-background-main border-none rounded-lg text-sm px-3 py-1.5 focus:ring-2 focus:ring-gold/50 outline-none text-gold-dark font-medium cursor-pointer">
-              <option className="text-gold-dark">This Week</option>
-              <option className="text-gold-dark">Last Week</option>
-              <option className="text-gold-dark">This Month</option>
-            </select>
+      <div className="relative w-full max-w-md px-6">
+        {/* Logo/Brand Area */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-[#B28D5A] to-[#5C4011] mb-6 shadow-2xl shadow-gold/20 transform hover:rotate-6 transition-transform">
+             <span className="text-3xl font-bold text-white tracking-tighter italic">SN</span>
           </div>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} dy={10} />
-                <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} />
-                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} />
-                <Tooltip
-                  cursor={{ fill: 'rgba(92, 64, 17, 0.05)' }}
-                  contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  labelStyle={{ color: '#5C4011', fontWeight: 'bold' }}
-                />
-                <Bar yAxisId="left" dataKey="revenue" name="Revenue (₹)" fill="#0F2E4A" radius={[4, 4, 0, 0]} barSize={24} />
-                <Bar yAxisId="right" dataKey="bookings" name="Bookings" fill="#B28D5A" radius={[4, 4, 0, 0]} barSize={24} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <h1 className="text-4xl font-extrabold text-[#FDFBF7] tracking-tight mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-[#FDFBF7]/60 font-medium">
+            Enter your administrative credentials.
+          </p>
         </div>
 
-        {/* Quick Actions / Recent Activity Placeholder */}
-        <div className="bg-[#EBE2D3] p-6 rounded-2xl shadow-sm border border-gray-100">
-          <h3 className="text-lg font-bold text-gray-800 mb-6">Recent Activity</h3>
-          <div className="space-y-6">
-            {[
-              { title: "New Salon Request", desc: "Urban Cut has submitted a registration request.", time: "10 mins ago", color: "bg-orange-100 text-orange-600" },
-              { title: "Booking Completed", desc: "John Doe at GK Styles.", time: "1 hour ago", color: "bg-green-100 text-green-600" },
-              { title: "Payment Received", desc: "Advance payment of ₹500 received.", time: "2 hours ago", color: "bg-blue-100 text-blue-600" },
-              { title: "New Review", desc: "5 stars rating given to Glow Salon.", time: "3 hours ago", color: "bg-gold/20 text-gold" },
-            ].map((activity, i) => (
-              <div key={i} className="flex gap-4">
-                <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${activity.color.split(' ')[0]}`} />
-                <div>
-                  <h4 className="text-sm font-semibold text-gray-800">{activity.title}</h4>
-                  <p className="text-xs text-gray-500 mt-1">{activity.desc}</p>
-                  <span className="text-xs text-gray-400 mt-1 block">{activity.time}</span>
+        {/* Login Card */}
+        <div className="relative group">
+          {/* Card Border Glow */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#B28D5A]/50 to-[#BA6A58]/50 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+          
+          <div className="relative bg-[#0A1F32]/80 backdrop-blur-xl border border-white/5 p-8 rounded-3xl shadow-2xl overflow-hidden">
+            
+            {error && (
+              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium animate-in fade-in slide-in-from-top-2">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-6">
+              {/* Username Input */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#B28D5A] uppercase tracking-widest ml-1">
+                  Username
+                </label>
+                <div className="relative group/input">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <User size={18} className="text-[#FDFBF7]/30 group-focus-within/input:text-[#B28D5A] transition-colors" />
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full bg-white/[0.03] border border-white/10 text-white pl-11 pr-4 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#B28D5A]/50 focus:border-[#B28D5A] transition-all placeholder:text-white/10"
+                    placeholder="admin_username"
+                  />
                 </div>
               </div>
-            ))}
+
+              {/* Password Input */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#B28D5A] uppercase tracking-widest ml-1">
+                  Password
+                </label>
+                <div className="relative group/input">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Lock size={18} className="text-[#FDFBF7]/30 group-focus-within/input:text-[#B28D5A] transition-colors" />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-white/[0.03] border border-white/10 text-white pl-11 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#B28D5A]/50 focus:border-[#B28D5A] transition-all placeholder:text-white/10"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-[#FDFBF7]/30 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full group/btn relative flex items-center justify-center py-4 bg-gradient-to-r from-[#B28D5A] to-[#9E7D50] text-[#FDFBF7] font-bold rounded-2xl shadow-lg shadow-gold/10 hover:shadow-gold/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight size={18} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+            </form>
           </div>
         </div>
+
+        {/* Footer Text */}
+        <p className="mt-8 text-center text-[#FDFBF7]/30 text-sm font-medium tracking-wide">
+          © 2026 StyleNext Admin • Secure Infrastructure
+        </p>
       </div>
     </div>
   );
