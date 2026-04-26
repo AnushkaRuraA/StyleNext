@@ -5,6 +5,10 @@ import { rtdb, auth } from "@/lib/firebase";
 // ─── Auth Guard ───────────────────────────────────────────────────────────────
 const waitForAuth = (): Promise<void> => {
   return new Promise((resolve) => {
+    if (!auth || !auth.onAuthStateChanged) {
+      console.warn("RTDB: Auth not initialized.");
+      return resolve();
+    }
     const unsub = onAuthStateChanged(auth, (user) => {
       unsub();
       if (!user) console.warn("RTDB: Not authenticated — rules may block reads.");
@@ -26,7 +30,10 @@ const snapshotToArray = <T>(snapshot: any): T[] => {
 const isBarber = (u: any) => u.role === "barber" || Boolean(u.salonName);
 
 const safeGet = async (path: string) => {
-  try { return await get(ref(rtdb, path)); }
+  try { 
+    if (!rtdb || Object.keys(rtdb).length === 0) return null;
+    return await get(ref(rtdb, path)); 
+  }
   catch { return null; }
 };
 
@@ -206,6 +213,10 @@ export const getSalonsWithServices = async (): Promise<SalonWithServices[]> => {
 // ─── Real-time listener for pending salons (approvals page) ───────────────────
 // Since approval is tracked by salonStatus on barber users, we listen to users
 export const listenToPendingSalons = (callback: (salons: Salon[]) => void) => {
+  if (!rtdb || Object.keys(rtdb).length === 0) {
+    callback([]);
+    return () => {};
+  }
   const usersRef = ref(rtdb, "users");
   const unsub = onValue(usersRef, (snapshot) => {
     if (!snapshot.exists()) { callback([]); return; }
@@ -234,6 +245,7 @@ export const listenToPendingSalons = (callback: (salons: Salon[]) => void) => {
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
 export const updateSalonStatus = async (salonId: string, status: 'approved' | 'rejected') => {
+  if (!rtdb || Object.keys(rtdb).length === 0) return;
   const salonRef = ref(rtdb, `users/${salonId}`);
   return update(salonRef, { salonStatus: status });
 };
