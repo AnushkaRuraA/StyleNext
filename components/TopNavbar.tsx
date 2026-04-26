@@ -68,22 +68,22 @@ export default function TopNavbar() {
               <div className="px-3 py-2 border-b border-gray-300/30 mb-1">
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Account</p>
               </div>
-              
-              <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-white/40 rounded-xl transition-colors group">
+
+              {/* <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-white/40 rounded-xl transition-colors group">
                 <div className="p-1.5 rounded-lg bg-white/20 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                     <UserIcon size={16} />
                 </div>
                 Profile Settings
-              </button>
+              </button> */}
 
               <div className="h-px bg-gray-300/30 my-1"></div>
 
-              <button 
+              <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50/50 rounded-xl transition-colors group"
               >
                 <div className="p-1.5 rounded-lg bg-red-50 group-hover:bg-red-100 transition-colors">
-                    <LogOut size={16} />
+                  <LogOut size={16} />
                 </div>
                 <span className="font-semibold">Logout</span>
               </button>
