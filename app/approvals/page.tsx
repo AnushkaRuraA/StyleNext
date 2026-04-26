@@ -2,14 +2,28 @@
 
 import { CheckCircle2, XCircle, Search } from "lucide-react";
 
+import React, { useState, useEffect } from "react";
+import { listenToPendingSalons, updateSalonStatus, Salon } from "@/services/firestoreService";
+
 export default function ApprovalsPage() {
-  const approvals = [
-    { id: 1, name: "Gulshan Kumar", salon: "GK Styles", phone: "+91 9876543210", date: "Oct 24, 2023" },
-    { id: 2, name: "Ravi Sharma", salon: "Urban Cut", phone: "+91 9876543211", date: "Oct 24, 2023" },
-    { id: 3, name: "Neha Verma", salon: "Glow Salon", phone: "+91 9876543212", date: "Oct 23, 2023" },
-    { id: 4, name: "Amit Singh", salon: "Style Studio", phone: "+91 9876543213", date: "Oct 22, 2023" },
-    { id: 5, name: "Pooja Das", salon: "Elegance Spa", phone: "+91 9876543214", date: "Oct 21, 2023" },
-  ];
+  const [approvals, setApprovals] = useState<Salon[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = listenToPendingSalons((data) => {
+      setApprovals(data);
+      setIsLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleAction = async (id: string, status: 'approved' | 'rejected') => {
+    try {
+        await updateSalonStatus(id, status);
+    } catch (err) {
+        console.error("Failed to update status", err);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -49,22 +63,30 @@ export default function ApprovalsPage() {
                       </div>
                       <div>
                         <p className="font-semibold text-gray-800">{req.name}</p>
-                        <p className="text-xs text-gray-500">Applied on {req.date}</p>
+                        <p className="text-xs text-gray-500">
+                            {req.createdAt ? `Applied on ${new Date(req.createdAt?.seconds * 1000).toLocaleDateString()}` : 'Date unknown'}
+                        </p>
                       </div>
                     </div>
                   </td>
                   <td className="py-4 px-6">
                     <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-sm font-medium border border-purple-100">
-                      {req.salon}
+                      {req.name || 'Unknown Salon'}
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-gray-600 text-sm">{req.phone}</td>
+                  <td className="py-4 px-6 text-gray-600 text-sm">{req.mobile || "—"}</td>
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-center gap-3">
-                      <button className="flex items-center justify-center w-8 h-8 rounded-full bg-green-50 text-green-600 hover:bg-green-500 hover:text-white transition-all shadow-sm border border-green-100 opacity-80 group-hover:opacity-100" title="Approve">
+                      <button 
+                        onClick={() => handleAction(req.id, 'approved')}
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-green-50 text-green-600 hover:bg-green-500 hover:text-white transition-all shadow-sm border border-green-100 opacity-80 group-hover:opacity-100" title="Approve"
+                      >
                         <CheckCircle2 className="w-5 h-5" />
                       </button>
-                      <button className="flex items-center justify-center w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100 opacity-80 group-hover:opacity-100" title="Reject">
+                      <button 
+                        onClick={() => handleAction(req.id, 'rejected')}
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100 opacity-80 group-hover:opacity-100" title="Reject"
+                      >
                         <XCircle className="w-5 h-5" />
                       </button>
                     </div>

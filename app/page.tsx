@@ -41,11 +41,25 @@ export default function LoginPage() {
       logger.api("POST", "/api/admin/login", response.status, endTime - startTime);
 
       if (data.success) {
-        logger.success("Login successful, redirecting...");
-        // Set cookie manually
+        logger.success("Backend login successful, authorizing Firebase...");
+        
+        // 1. Sign into Firebase with the Custom Token from Node
+        const { auth } = await import("@/lib/firebase");
+        const { signInWithCustomToken } = await import("firebase/auth");
+        
+        try {
+            await signInWithCustomToken(auth, data.firebaseToken);
+            logger.success("Firebase Authorization successful");
+        } catch (fbErr) {
+            logger.error("Firebase Auth failed:", fbErr);
+            // We continue anyway since backend login worked, 
+            // but Firestore calls might fail if rules are strict
+        }
+
+        // 2. Set backend cookie manually
         document.cookie = `admin_token=${data.token}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
         
-        // Redirect to dashboard
+        // 3. Redirect to dashboard
         router.push("/dashboard");
       } else {
         logger.warn(`Login failed: ${data.message}`);

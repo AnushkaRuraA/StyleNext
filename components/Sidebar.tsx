@@ -9,7 +9,6 @@ import {
   Store,
   CalendarDays,
   CreditCard,
-  Scissors,
   BarChart3,
   Star,
   Menu,
@@ -35,13 +34,13 @@ const CustomScissorsIcon = ({ className }: { className?: string }) => (
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, animationClass: "hover-animate-dashboard" },
-  { name: "Approvals", href: "/approvals", icon: ClipboardCheck, animationClass: "hover-animate-clipboard" },
+  // { name: "Approvals", href: "/approvals", icon: ClipboardCheck, animationClass: "hover-animate-clipboard" },
   { name: "Customers", href: "/customers", icon: Users, animationClass: "hover-animate-users" },
   { name: "Salons", href: "/salons", icon: Store, animationClass: "hover-animate-store" },
   { name: "Appointments", href: "/appointments", icon: CalendarDays, animationClass: "hover-animate-calendar" },
   { name: "Payments", href: "/payments", icon: CreditCard, animationClass: "hover-animate-card" },
   { name: "Services", href: "/services", icon: CustomScissorsIcon, animationClass: "" },
-  { name: "Reports", href: "/analytics", icon: BarChart3, animationClass: "hover-animate-chart" },
+  // { name: "Reports", href: "/analytics", icon: BarChart3, animationClass: "hover-animate-chart" },
   { name: "Reviews", href: "/reviews", icon: Star, animationClass: "hover-animate-star" },
 ];
 

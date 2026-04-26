@@ -1,15 +1,27 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { Search, MoreVertical, Phone, Mail } from "lucide-react";
+import { getCustomers, Customer } from "@/services/firestoreService";
 
 export default function CustomersPage() {
-  const customers = [
-    { id: 1, name: "Aarav Patel", phone: "+91 9876543220", email: "aarav@example.com", bookings: 12, status: "Active" },
-    { id: 2, name: "Priya Sharma", phone: "+91 9876543221", email: "priya@example.com", bookings: 8, status: "Active" },
-    { id: 3, name: "Rohan Gupta", phone: "+91 9876543222", email: "rohan@example.com", bookings: 3, status: "Inactive" },
-    { id: 4, name: "Kavita Reddy", phone: "+91 9876543223", email: "kavita@example.com", bookings: 15, status: "Active" },
-    { id: 5, name: "Vikram Singh", phone: "+91 9876543224", email: "vikram@example.com", bookings: 1, status: "New" },
-  ];
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    async function load() {
+      const data = await getCustomers();
+      setCustomers(data);
+      setIsLoading(false);
+    }
+    load();
+  }, []);
+
+  const filtered = customers.filter(c =>
+    c.name?.toLowerCase().includes(search.toLowerCase()) ||
+    c.email?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -23,6 +35,8 @@ export default function CustomersPage() {
            <input
              type="text"
              placeholder="Search customers..."
+             value={search}
+             onChange={e => setSearch(e.target.value)}
              className="w-full pl-10 pr-4 py-2 bg-[#EBE2D3] border border-gray-100 rounded-lg text-sm text-gold-dark placeholder:text-gold-dark/60 font-medium focus:outline-none focus:ring-2 focus:ring-gold-dark/50"
            />
         </div>
@@ -35,40 +49,44 @@ export default function CustomersPage() {
               <tr className="bg-gray-50/50 border-b border-gray-100 text-sm font-medium text-gray-500">
                 <th className="py-4 px-6">Customer Details</th>
                 <th className="py-4 px-6">Contact Info</th>
-                <th className="py-4 px-6 text-center">Total Bookings</th>
-                <th className="py-4 px-6">Status</th>
+                <th className="py-4 px-6 text-center">Status</th>
                 <th className="py-4 px-6 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {customers.map((customer) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center text-gray-400">Loading customers...</td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center text-gray-500">
+                    {search ? `No customers found for "${search}"` : "No customers found in Firestore."}
+                  </td>
+                </tr>
+              ) : filtered.map((customer) => (
                 <tr key={customer.id} className="hover:bg-gray-50/30 transition-colors group">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
-                        {customer.name.charAt(0)}
+                        {(customer.name || "?").charAt(0).toUpperCase()}
                       </div>
-                      <p className="font-semibold text-gray-800">{customer.name}</p>
+                      <p className="font-semibold text-gray-800">{customer.name || "Unnamed User"}</p>
                     </div>
                   </td>
                   <td className="py-4 px-6">
                      <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Phone className="w-3.5 h-3.5 text-gray-400" /> {customer.phone}
+                          <Phone className="w-3.5 h-3.5 text-gray-400" /> {customer.phone || "—"}
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Mail className="w-3.5 h-3.5 text-gray-400" /> {customer.email}
+                          <Mail className="w-3.5 h-3.5 text-gray-400" /> {customer.email || "—"}
                         </div>
                      </div>
                   </td>
-                  <td className="py-4 px-6 text-center font-medium text-gray-700">{customer.bookings}</td>
-                  <td className="py-4 px-6">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
-                      customer.status === 'Active' ? 'bg-green-50 text-green-700 border-green-100' : 
-                      customer.status === 'New' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                      'bg-gray-100 text-gray-700 border-gray-200'
-                    }`}>
-                      {customer.status}
+                  <td className="py-4 px-6 text-center">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-green-50 text-green-700 border-green-100">
+                      Active
                     </span>
                   </td>
                   <td className="py-4 px-6 text-right">

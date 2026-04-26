@@ -1,14 +1,40 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { IndianRupee } from "lucide-react";
+import { getPayments, Payment } from "@/services/firestoreService";
 
 export default function PaymentsPage() {
-  const payments = [
-    { id: "PAY-001", customer: "Aarav Patel", salon: "GK Styles", total: 500, advance: 50, remaining: 450, status: "Paid in Full", date: "Oct 25, 2023" },
-    { id: "PAY-002", customer: "Priya Sharma", salon: "Urban Cut", total: 800, advance: 80, remaining: 720, status: "Advance Paid", date: "Oct 25, 2023" },
-    { id: "PAY-003", customer: "Rohan Gupta", salon: "Glow Salon", total: 1500, advance: 150, remaining: 1350, status: "Pending", date: "Oct 25, 2023" },
-    { id: "PAY-004", customer: "Kavita Reddy", salon: "GK Styles", total: 1200, advance: 120, remaining: 1080, status: "Advance Paid", date: "Oct 26, 2023" },
-  ];
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const data = await getPayments();
+      setPayments(data);
+      setIsLoading(false);
+    }
+    load();
+  }, []);
+
+  const formatDate = (val: any) => {
+    if (!val) return "—";
+    if (typeof val === "number") return new Date(val).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    return "—";
+  };
+
+  const statusStyle = (status?: string) => {
+    if (!status) return "bg-orange-50 text-orange-700 border-orange-100";
+    const s = status.toLowerCase();
+    if (s === "paid" || s.includes("full")) return "bg-green-50 text-green-700 border-green-100";
+    if (s.includes("advance")) return "bg-blue-50 text-blue-700 border-blue-100";
+    return "bg-orange-50 text-orange-700 border-orange-100";
+  };
+
+  const formatStatus = (s?: string) => {
+    if (!s) return "Pending";
+    return s.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  };
 
   return (
     <div className="space-y-6">
@@ -23,7 +49,7 @@ export default function PaymentsPage() {
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100 text-sm font-medium text-gray-500">
                 <th className="py-4 px-6">Transaction ID</th>
-                <th className="py-4 px-6">Booking Details</th>
+                <th className="py-4 px-6">Appointment</th>
                 <th className="py-4 px-6 text-right">Total Amount</th>
                 <th className="py-4 px-6 text-right">Advance (10%)</th>
                 <th className="py-4 px-6 text-right">Remaining (90%)</th>
@@ -31,38 +57,37 @@ export default function PaymentsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {payments.map((pay) => (
+              {isLoading ? (
+                <tr><td colSpan={6} className="py-12 text-center text-gray-400">Loading payments...</td></tr>
+              ) : payments.length === 0 ? (
+                <tr><td colSpan={6} className="py-12 text-center text-gray-500">No payments found in Firebase.</td></tr>
+              ) : payments.map((pay) => (
                 <tr key={pay.id} className="hover:bg-gray-50/30 transition-colors">
                   <td className="py-4 px-6">
-                    <p className="font-mono text-sm text-gray-600">{pay.id}</p>
-                    <p className="text-xs text-gray-400 mt-1">{pay.date}</p>
+                    <p className="font-mono text-sm text-gray-600">{(pay.razorpayPaymentId || pay.id).slice(0, 16)}</p>
+                    <p className="text-xs text-gray-400 mt-1">{formatDate(pay.paidAt)}</p>
                   </td>
                   <td className="py-4 px-6">
-                    <p className="text-sm font-medium text-gray-800">{pay.customer}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">at {pay.salon}</p>
+                    <p className="text-xs text-gray-500 font-mono">{pay.appointmentId?.slice(1, 12) ?? "—"}</p>
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end font-semibold text-gray-900">
-                      <IndianRupee className="w-3.5 h-3.5" /> {pay.total}
+                      <IndianRupee className="w-3.5 h-3.5" />{(pay.totalAmount ?? 0).toLocaleString("en-IN")}
                     </div>
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end text-sm text-green-600 font-medium">
-                      <IndianRupee className="w-3.5 h-3.5" /> {pay.advance}
+                      <IndianRupee className="w-3.5 h-3.5" />{(pay.advancePaid ?? 0).toLocaleString("en-IN")}
                     </div>
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end text-sm text-orange-600 font-medium">
-                      <IndianRupee className="w-3.5 h-3.5" /> {pay.remaining}
+                      <IndianRupee className="w-3.5 h-3.5" />{(pay.remainingAmount ?? 0).toLocaleString("en-IN")}
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${
-                      pay.status === 'Paid in Full' ? 'bg-green-50 text-green-700 border-green-100' : 
-                      pay.status === 'Advance Paid' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                      'bg-orange-50 text-orange-700 border-orange-100'
-                    }`}>
-                      {pay.status}
+                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${statusStyle(pay.status)}`}>
+                      {formatStatus(pay.status)}
                     </span>
                   </td>
                 </tr>
