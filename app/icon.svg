@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="42" stroke="#BA6A58" stroke-width="2.5" fill="transparent" />
+  <path d="M 49 8 C 43 4, 38 7, 42 16 C 47 12, 51 8, 49 8 Z" fill="#B28D5A" />
+  <path d="M 51 8 C 57 4, 62 7, 58 16 C 53 12, 49 8, 51 8 Z" fill="#B28D5A" />
+  <text x="56" y="68" font-family="Georgia, serif" font-size="48" fill="#B28D5A" font-weight="bold" text-anchor="middle">N</text>
+  <text x="44" y="68" font-family="Georgia, serif" font-size="48" fill="#0F2E4A" font-weight="bold" text-anchor="middle">S</text>
+  <path d="M -5 55 Q 25 40, 50 55 T 105 55" stroke="#0F2E4A" stroke-width="4" stroke-linecap="round" fill="transparent" />
+</svg>
