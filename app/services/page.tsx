@@ -10,6 +10,12 @@ export default function ServicesPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("search");
+    if (q) setSearch(q);
+  }, []);
+
+  useEffect(() => {
     async function load() {
       const data = await getSalonsWithServices();
       setSalons(data);
