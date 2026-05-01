@@ -1,5 +1,4 @@
 {
   "cleanUrls": true,
-  "framework": "nextjs",
-  "deploymentStrategy": "all"
+  "framework": "nextjs"
 }
